@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "End-to-end UI automation framework built with Playwright and TypeScript using Page Object Model, fixtures, reusable utilities, Docker, and CI/CD integration through GitHub Actions.",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "npx playwright test tests/example.spec.ts --project=chromium"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
