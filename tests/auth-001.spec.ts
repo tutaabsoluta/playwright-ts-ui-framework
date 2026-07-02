@@ -21,9 +21,23 @@ test.describe('User registration', () => {
         const signUpButton = page.locator('[data-qa="signup-button"]');
         await signUpButton.click();
         
-        const signUpPageHeader = page.getByText('Enter Account Information')
+        const signUpPageHeader = page.getByText('Enter Account Information');
         await expect(signUpPageHeader).toBeVisible();
 
+        // set password
+        const passwordInput = page.locator('[data-qa="password"]');
+        await passwordInput.fill('password')
 
+        // date of birth steps
+        // day
+        // const dayPicker = page.locator('#days');
+        // await dayPicker.click();
+        await page.locator('#days').selectOption({ value: '15' });
+
+        // month
+        await page.locator('#months').selectOption({ value: '1' })
+
+        // year
+        await page.locator('#years').selectOption({ value: '2020' })
     })
 })
