@@ -6,11 +6,11 @@ test.describe('User registration', () => {
 
         // homepage actions
         await page.goto('https://automationexercise.com/')
-        const titleLocator = await page.locator('.logo.pull-left');
+        const titleLocator = page.locator('.logo.pull-left');
         await expect(titleLocator).toBeVisible();
 
-        // sign up locator
-        const signUpLink = await page.locator('[href="/login"]');
+        // click signup/login
+        const signUpLink = page.locator('[href="/login"]');
         await signUpLink.click();
 
         // login page
@@ -22,7 +22,6 @@ test.describe('User registration', () => {
 
         const signUpButton = page.locator('[data-qa="signup-button"]');
         await signUpButton.click();
-
 
         // signup page
         const signUpPageHeader = page.getByText('Enter Account Information');
