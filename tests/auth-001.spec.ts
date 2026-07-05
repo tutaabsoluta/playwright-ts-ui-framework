@@ -18,7 +18,7 @@ test.describe('User registration', () => {
         await signupNameTextbox.fill('Sergio');
 
         const emailInput = page.locator('[data-qa="signup-email"]');
-        await emailInput.fill('sergio@mail.com')
+        await emailInput.fill(process.env.USER_MAIL!)
 
         const signUpButton = page.locator('[data-qa="signup-button"]');
         await signUpButton.click();
@@ -34,7 +34,7 @@ test.describe('User registration', () => {
 
         // set password
         const passwordInput = page.locator('[data-qa="password"]');
-        await passwordInput.fill('password')
+        await passwordInput.fill(process.env.USER_PASSWORD!)
 
         // date of birth steps
         // day
