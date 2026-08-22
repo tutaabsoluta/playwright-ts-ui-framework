@@ -1,5 +1,5 @@
 import test from "@playwright/test";
-import { env } from '../env'
+import { env } from '../../env'
 
 test.describe('Login flow', () => {
     test('Should login successfully with valid credentials', async ({ page }) => {
