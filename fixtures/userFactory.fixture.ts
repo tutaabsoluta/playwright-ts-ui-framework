@@ -1,7 +1,7 @@
 import { test as base } from '@playwright/test';
 import { UserFactory } from '../utils/UserFactory'
-import { UUIDAdapter } from "../adapters/UUIDAdapter";
 import { UserService } from '../services/UserService.service';
+import { UUIDAdapter } from "../adapters/UUIDAdapter";
 
 type Fixtures = {
     testUser: {

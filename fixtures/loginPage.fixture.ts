@@ -1,5 +1,5 @@
-import { test as base } from '@playwright/test';
 import { LoginPage } from '../pages/LoginPage';
+import { test as base } from '@playwright/test';
 
 
 type Fixtures = {

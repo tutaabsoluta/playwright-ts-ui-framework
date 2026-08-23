@@ -1,14 +1,8 @@
 import { test as base } from '@playwright/test';
-import { UUIDAdapter } from '../adapters/UUIDAdapter';
 import { UserFactory } from '../utils/UserFactory';
 import { UserService } from '../services/UserService.service';
+import { UUIDAdapter } from '../adapters/UUIDAdapter';
 
-
-
-// este fixture debe hacer lo  siguiente
-// 1. Crear el usuario por medio del API
-// 2. Exponerlo para usarlo en el login
-// 3. Borrarlo en el teardown/cleanup
 
 type Fixtures = {
     testUser: {

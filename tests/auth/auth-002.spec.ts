@@ -1,7 +1,6 @@
 import { expect } from "@playwright/test";
-
-import { test } from "../../fixtures/existingUser.fixture";
 import { LoginPage } from "../../pages/LoginPage";
+import { test } from "../../fixtures/existingUser.fixture";
 
 test.describe("Login flow", () => {
     test("Should login successfully with valid credentials", async ({ page, testUser }) => {

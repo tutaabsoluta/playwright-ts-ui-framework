@@ -1,6 +1,6 @@
 import { expect } from "@playwright/test";
-import { test } from "../../fixtures/userFactory.fixture";
 import { RegisterPage } from "../../pages/RegisterPage";
+import { test } from "../../fixtures/userFactory.fixture";
 
 test.describe("User registration", () => {
   test("Should register a new user successfully", async ({ page, testUser }) => {
