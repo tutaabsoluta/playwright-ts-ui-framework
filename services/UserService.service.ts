@@ -22,10 +22,11 @@ export class UserService {
     async deleteUser(request: APIRequestContext) {
         const url = 'https://automationexercise.com/api/deleteAccount'
         const response = await request.delete(url, {
-            data: {
+            form: {
                 email: this.user.email,
                 password: this.user.password
             }
         })
+        return response.json()
     }
 }
