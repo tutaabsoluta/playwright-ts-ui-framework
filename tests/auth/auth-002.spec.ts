@@ -1,25 +1,24 @@
-import { test } from "../../fixtures/existingUser.fixture";
-
-import { env } from '../../env'
 import { expect } from "@playwright/test";
 
-test.describe('Login flow', () => {
-    test('Should login successfully with valid credentials', async ({ page, testUser }) => {
-        await page.goto('https://automationexercise.com/');
-        const signUpLink = page.locator('[href="/login"]');
-        await signUpLink.click();
+import { test } from "../../fixtures/existingUser.fixture";
+import { LoginPage } from "../../pages/LoginPage";
 
-        // login
-        const emailInput = page.locator('[data-qa="login-email"]');
-        await emailInput.fill(testUser.email)
+test.describe("Login flow", () => {
+    test("Should login successfully with valid credentials", async ({ page, testUser }) => {
+        const loginPage = new LoginPage(page);
 
-        const passwordInput = page.locator('[data-qa="login-password"]');
-        await passwordInput.fill(testUser.password)
+        // Navigate to homepage
+        await loginPage.navigate('/');
 
-        const loginCta = page.locator('[data-qa="login-button"]')
-        await loginCta.click();
+        // Navigate to login page
+        await loginPage.clickSignUpLink();
 
-        const loggedInAsLink = page.locator('.fa.fa-user');
-        await expect(loggedInAsLink).toBeVisible();
-    })
-})
+        // Login
+        await loginPage.fillLoginEmail(testUser.email);
+        await loginPage.fillLoginPassword(testUser.password);
+        await loginPage.clickLoginButton();
+
+        // Verify user is logged in
+        await expect(loginPage.loggedInAs).toBeVisible();
+    });
+});
