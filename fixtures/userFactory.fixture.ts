@@ -1,6 +1,7 @@
 import { test as base } from '@playwright/test';
 import { UserFactory } from '../utils/UserFactory'
 import { UUIDAdapter } from "../adapters/UUIDAdapter";
+import { UserService } from '../services/UserService.service';
 
 type Fixtures = {
     testUser: {
@@ -10,16 +11,19 @@ type Fixtures = {
 }
 
 export const test = base.extend<Fixtures>({
-    testUser: async ({}, use) => {
+    testUser: async ({request}, use) => {
         const uuidAdapter = new UUIDAdapter()
         const dataFactory = new UserFactory(uuidAdapter)
+        const user = dataFactory.generateUser()
+        const userService = new UserService(user)
 
-        const user = {
-            email: dataFactory.generateUniqueEmail(),
-            password: dataFactory.generatePassword(),
+        const credentials = {
+            email: user.email,
+            password: user.password,
         }
 
-        await use(user);
+        await use(credentials);
+        await userService.deleteUser(request)
     }
    
 })
