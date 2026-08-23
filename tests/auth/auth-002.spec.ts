@@ -6,7 +6,7 @@ import { expect } from "@playwright/test";
 test.describe('Login flow', () => {
     test('Should login successfully with valid credentials', async ({ page, testUser }) => {
         await page.goto('https://automationexercise.com/');
-        const signUpLink = await page.locator('[href="/login"]');
+        const signUpLink = page.locator('[href="/login"]');
         await signUpLink.click();
 
         // login
