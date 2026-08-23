@@ -1,16 +1,31 @@
-
+import { APIRequestContext } from "@playwright/test";
+import { User } from "../types/User";
 
 
 
 export class UserService {
 
-    async registerUser() {
-        // endpoint https://automationexercise.com/api/createAccount
-        // req params: name, email, password, title (for example: Mr, Mrs, Miss), birth_date, birth_month, birth_year, firstname, lastname, company, address1, address2, country, zipcode, state, city, mobile_number
+    constructor(
+        private readonly user: User
+    ) { }
+
+    async registerUser(request: APIRequestContext) {
+        const url = 'https://automationexercise.com/api/createAccount';
+        const response = await request.post(url, {
+            form: {
+                ...this.user
+            }
+        })
+        return response.json()
     }
 
-    async deleteUser() {
-        // endpoint https://automationexercise.com/api/deleteAccount
-        // req params: email, password 
+    async deleteUser(request: APIRequestContext) {
+        const url = 'https://automationexercise.com/api/deleteAccount'
+        const response = await request.delete(url, {
+            data: {
+                email: this.user.email,
+                password: this.user.password
+            }
+        })
     }
 }
