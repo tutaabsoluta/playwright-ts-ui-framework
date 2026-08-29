@@ -1,3 +1,4 @@
+import { expect } from "@playwright/test";
 import { test } from "../../fixtures/existingUser.fixture";
 import { LoginPage } from "../../pages/LoginPage";
 
@@ -18,5 +19,14 @@ test.describe("Products", () => {
         
         const productsNavLink = page.locator('[href="/products"]')
         await productsNavLink.click()
+
+        const productCards = page.locator('.single-products')
+        await expect(productCards).not.toHaveCount(0)
+
+        const firstProduct = productCards.first()
+        await expect(firstProduct.locator('img').first()).toBeVisible()
+        await expect(firstProduct.locator('h2').first()).toBeVisible()
+        await expect(firstProduct.locator('p').first()).toBeVisible()
+        await expect(firstProduct.locator('.add-to-cart').first()).toBeVisible()
     });
 });
