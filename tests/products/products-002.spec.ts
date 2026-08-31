@@ -24,8 +24,7 @@ test.describe("Products", () => {
         const productDetailsContainer = page.locator('.product-details')
         await expect(productDetailsContainer.locator('h2')).toHaveText('Blue Top')
         await expect(productDetailsContainer.locator('p').first()).toHaveText('Category: Women > Tops')
-        await expect(productDetailsContainer.locator('span').locator('span')).toHaveText('Rs. 500')
-        // await expect(productDetailsContainer.locator('p').nth(1).locator('b')).toHaveText('Availability:')
+        await expect(productDetailsContainer.getByText('Rs. 500')).toBeVisible()
         await expect(productDetailsContainer.locator('p').nth(1)).toHaveText('Availability: In Stock')
 
     });
