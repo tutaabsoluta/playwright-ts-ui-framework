@@ -4,6 +4,8 @@ import { LoginPage } from "../../pages/LoginPage";
 
 test.describe("Cart", () => {
     test("Should add a product to cart", async ({ page, testUser }) => {
-        
+        const loginPage = new LoginPage(page)
+
+        await page.goto('/')
     });
 });
