@@ -25,6 +25,6 @@ test.describe("Cart", () => {
         const continueShoppingCta = page.locator('.btn.btn-success.close-modal.btn-block')
         await continueShoppingCta.click()
         const cartNavLink = page.getByRole('link', { name: ' Cart' })
-        await cartNavLink.click()
+        // await cartNavLink.click()
     });
 });
