@@ -23,8 +23,9 @@ test.describe("Cart", () => {
         await addToCartCta.first().click()
 
         const continueShoppingCta = page.locator('.btn.btn-success.close-modal.btn-block')
-        await continueShoppingCta.click()
-        const cartNavLink = page.getByRole('link', { name: ' Cart' })
-        // await cartNavLink.click()
+
+        const addedToCartModal = page.locator('.modal-content')
+        await expect(addedToCartModal).toBeVisible()
+
     });
 });
