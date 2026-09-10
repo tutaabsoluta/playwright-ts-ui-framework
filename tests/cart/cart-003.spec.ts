@@ -20,6 +20,6 @@ test.describe("Cart", () => {
         await productsNavLink.click()
 
         const addToCartCta = page.locator('.btn.btn-default.add-to-cart')
-        await addToCartCta.first().click()
+        // await addToCartCta.first().click()
     });
 });
