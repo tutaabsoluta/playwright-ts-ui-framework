@@ -22,8 +22,6 @@ test.describe("Cart", () => {
         const addToCartCta = page.locator('.btn.btn-default.add-to-cart')
         await addToCartCta.first().click()
 
-        const continueShoppingCta = page.locator('.btn.btn-success.close-modal.btn-block')
-
         const addedToCartModal = page.locator('.modal-content')
         await expect(addedToCartModal).toBeVisible()
 
