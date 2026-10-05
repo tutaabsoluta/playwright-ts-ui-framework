@@ -16,9 +16,11 @@ test.describe("Cart", () => {
         await loginPage.fillLoginPassword(testUser.password);
         await loginPage.clickLoginButton();
 
+        // Click products
         const productsNavLink = page.locator('[href="/products"]')
         await productsNavLink.click()
 
+        // Add product to cart
         const addToCartCta = page.locator('.btn.btn-default.add-to-cart')
         await addToCartCta.first().click()
 
