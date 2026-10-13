@@ -4,35 +4,35 @@ import { test } from "../../fixtures/userFactory.fixture";
 
 test.describe("User registration", () => {
   test("Should register a new user successfully", async ({ page, testUser }) => {
-    const loginPage = new RegisterPage(page);
+    const register = new RegisterPage(page);
 
     // Navigate to homepage
-    await loginPage.navigate('/');
-    await expect(loginPage.titleLocator).toBeVisible();
+    await register.navigate('/');
+    await expect(register.titleLocator).toBeVisible();
 
     // Navigate to signup/login
-    await loginPage.clickSignUpLink();
+    await register.clickSignUpLink();
 
     // Start registration
-    await loginPage.fillSignUpName('Sergio');
-    await loginPage.fillSignUpEmail(testUser.email);
-    await loginPage.clickSignUpButton();
+    await register.fillSignUpName('Sergio');
+    await register.fillSignUpEmail(testUser.email);
+    await register.clickSignUpButton();
 
     // Verify account information form
-    await expect(loginPage.signUpPageHeader).toBeVisible();
+    await expect(register.signUpPageHeader).toBeVisible();
 
     // Complete account information
-    await loginPage.selectTitle();
-    await loginPage.fillPassword(testUser.password);
+    await register.selectTitle();
+    await register.fillPassword(testUser.password);
 
-    await loginPage.selectBirthDate(
+    await register.selectBirthDate(
       '1',
       '1',
       '1994'
     );
 
     // Address information
-    await loginPage.fillAddressInformation(
+    await register.fillAddressInformation(
       "Company",
       "New York",
       "New York",
@@ -41,9 +41,9 @@ test.describe("User registration", () => {
       "777-7777-7777"
     );
 
-    await loginPage.selectCountry("United States");
+    await register.selectCountry("United States");
 
     // Submit registration
-    await loginPage.clickCreateAccount();
+    await register.clickCreateAccount();
   });
 });
