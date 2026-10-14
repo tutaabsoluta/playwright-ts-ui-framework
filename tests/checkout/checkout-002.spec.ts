@@ -21,7 +21,7 @@ test.describe("Checkout", () => {
         const continueShoppingModalCta = page.locator('[data-dismiss="modal"]')
         await continueShoppingModalCta.click()
 
-        const cartNavLink = page.getByRole('link', { name: ' Cart' })
+        const cartNavLink = page.locator('header').getByRole('link', { name: 'Cart' })
         await cartNavLink.click()
 
         const proceedToCheckoutCta = page.locator('.btn.btn-default.check_out')
