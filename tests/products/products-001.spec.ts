@@ -23,6 +23,7 @@ test.describe("Products", () => {
         const productCards = page.locator('.single-products')
         await expect(productCards).not.toHaveCount(0)
 
+        // Assertions
         const firstProduct = productCards.first()
         await expect(firstProduct.locator('img').first()).toBeVisible()
         await expect(firstProduct.locator('h2').first()).toBeVisible()
