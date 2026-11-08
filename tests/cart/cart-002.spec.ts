@@ -18,9 +18,15 @@ test.describe("Cart", () => {
 
         const productsNavLink = page.locator('[href="/products"]')
         await productsNavLink.click()
+        await expect(page).toHaveURL(/\/products/)
+        // Cart handlers are bound by a script at the end of the page; wait for it before clicking
+        await page.waitForLoadState('domcontentloaded')
 
-        const addToCartCta = page.locator('.btn.btn-default.add-to-cart')
-        await addToCartCta.first().click()
+
+        // Add the first product and keep its id to find it in the cart
+        const addToCartCta = page.locator('.btn.btn-default.add-to-cart').first()
+        const productId = await addToCartCta.getAttribute('data-product-id')
+        await addToCartCta.click()
 
         const continueShoppingCta = page.locator('.btn.btn-success.close-modal.btn-block')
         await continueShoppingCta.click()
@@ -30,7 +36,7 @@ test.describe("Cart", () => {
         const emptCartSpan = page.locator('[id="empty_cart"]')
         await expect(emptCartSpan).not.toBeVisible()
 
-        const productTr = page.locator('[id="product-1"]')
+        const productTr = page.locator(`[id="product-${productId}"]`)
         await expect(productTr).toBeVisible()
     });
 });

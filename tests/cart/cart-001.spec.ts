@@ -19,6 +19,10 @@ test.describe("Cart", () => {
         // Click products
         const productsNavLink = page.locator('[href="/products"]')
         await productsNavLink.click()
+        await expect(page).toHaveURL(/\/products/)
+        // Cart handlers are bound by a script at the end of the page; wait for it before clicking
+        await page.waitForLoadState('domcontentloaded')
+
 
         // Add product to cart
         const addToCartCta = page.locator('.btn.btn-default.add-to-cart')

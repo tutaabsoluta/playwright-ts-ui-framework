@@ -33,8 +33,9 @@ End-to-end UI automation framework for [automationexercise.com](https://automati
 ├── services/
 │   └── UserService.service.ts  # POST /api/createAccount, DELETE /api/deleteAccount
 ├── fixtures/
+│   ├── base.fixture.ts         # overrides page to block third-party ad requests
 │   ├── existingUser.fixture.ts # testUser registered via API before the test, deleted after
-│   ├── userFactory.fixture.ts  # testUser credentials only (registered in the UI), deleted after
+│   ├── userFactory.fixture.ts  # unregistered testUser (registered in the UI), deleted after
 │   └── loginPage.fixture.ts    # LoginPage fixture
 ├── pages/
 │   ├── LoginPage.ts            # header, login form, logged-in indicator, login error
@@ -57,7 +58,8 @@ UUIDAdapter ──► UserFactory ──► User ──► UserService (API) ─
 2. **Service**: `UserService` uses Playwright's `APIRequestContext` to create and delete the account through the site's API.
 3. **Fixtures** own the data lifecycle:
    - `existingUser.fixture` → register via API → run the test → delete the user. Used by every test that needs a logged-in user.
-   - `userFactory.fixture` → generate credentials only, so the test can register through the UI → delete the user afterwards.
+   - `userFactory.fixture` → generate a user without registering it, so the test can register through the UI → delete the user afterwards.
+   - `base.fixture` → both fixtures extend it; it blocks ad requests that otherwise make clicks flaky.
 4. **Page objects** expose `public readonly` locators and actions such as `fill*`, `click*`, `select*` and `navigate`.
 5. **Specs** import `test` from the fixture they need and `expect` from `@playwright/test`.
 
@@ -71,18 +73,18 @@ UUIDAdapter ──► UserFactory ──► User ──► UserService (API) ─
 
 | Suite | Spec | Scenario | Assertions |
 |---|---|---|---|
-| **Auth** | `auth-001` | Register a new user through the UI | Home logo and "Enter Account Information" form visible |
+| **Auth** | `auth-001` | Register a new user through the UI | "Enter Account Information" form visible; `Account Created!` shown |
 | | `auth-002` | Log in with valid credentials | Logged-in user indicator visible |
 | | `auth-003` | Log in with invalid credentials | Error `Your email or password is incorrect!` shown |
 | **Products** | `products-001` | View all products | Product grid not empty; first card shows image, name, price and Add to cart |
 | | `products-002` | View product details | `Blue Top`, `Category: Women > Tops`, `Rs. 500`, `Availability: In Stock` |
 | | `products-003` | Search for a product | Searching `shirt` returns results containing "shirt" |
 | **Cart** | `cart-001` | Add a product to the cart | "Added!" modal visible |
-| | `cart-002` | View the cart | Empty-cart message hidden; product row visible |
-| | `cart-003` | Update product quantity | In progress |
-| **Checkout** | `checkout-001` | Proceed to checkout | In progress |
-| | `checkout-002` | Place an order | In progress |
-| | `checkout-003` | Order confirmation | In progress |
+| | `cart-002` | View the cart | Empty-cart message hidden; row of the added product visible |
+| | `cart-003` | Set quantity on the product page and add to cart | Cart row shows the selected quantity |
+| **Checkout** | `checkout-001` | Proceed to checkout | URL `/checkout`; Address Details, Review Your Order and delivery address visible |
+| | `checkout-002` | Place an order and pay | URL `/payment_done/...`; `Order Placed!` shown |
+| | `checkout-003` | Order confirmation page | `Order Placed!`, confirmation message, Download Invoice and Continue visible |
 
 ## Getting started
 
@@ -124,7 +126,6 @@ On CI the config enables `forbidOnly`, 2 retries, 2 workers, and traces on the f
 
 ## Roadmap
 
-- Complete the cart quantity and checkout specs (payment and order confirmation).
 - Add page objects for Home/Header, Products, Product Details, Cart, Checkout and Payment.
 - Replace repeated UI login steps with a logged-in fixture or `storageState`.
 - Add ESLint, Prettier and npm scripts; run lint and type-check in CI.

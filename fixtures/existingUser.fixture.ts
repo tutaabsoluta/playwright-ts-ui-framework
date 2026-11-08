@@ -1,4 +1,4 @@
-import { test as base } from '@playwright/test';
+import { test as base } from './base.fixture';
 import { UserFactory } from '../utils/UserFactory';
 import { UserService } from '../services/UserService.service';
 import { UUIDAdapter } from '../adapters/UUIDAdapter';

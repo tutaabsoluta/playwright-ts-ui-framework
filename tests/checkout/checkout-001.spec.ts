@@ -14,6 +14,9 @@ test.describe("Checkout", () => {
         await loginPage.fillLoginEmail(testUser.email);
         await loginPage.fillLoginPassword(testUser.password);
         await loginPage.clickLoginButton();
+        await expect(loginPage.loggedInAs).toBeVisible()
+        // Cart handlers are bound by a script at the end of the page; wait for it before clicking
+        await page.waitForLoadState('domcontentloaded')
 
         const addToCartCta = page.locator('.btn.btn-default.add-to-cart')
         await addToCartCta.first().click()
@@ -23,10 +26,19 @@ test.describe("Checkout", () => {
 
         const cartNavLink = page.locator('header').getByRole('link', { name: 'Cart' })
         await cartNavLink.click()
+        await expect(page).toHaveURL(/\/view_cart/)
+        // Cart handlers are bound by a script at the end of the page; wait for it before clicking
+        await page.waitForLoadState('domcontentloaded')
 
         const proceedToCheckoutCta = page.locator('.btn.btn-default.check_out')
         await proceedToCheckoutCta.click()
 
-        // TODO: add checkout 001 assertion
+        // Verify checkout page
+        await expect(page).toHaveURL(/\/checkout$/)
+        await expect(page.getByRole('heading', { name: 'Address Details' })).toBeVisible()
+        await expect(page.getByRole('heading', { name: 'Review Your Order' })).toBeVisible()
+
+        const deliveryAddress = page.locator('#address_delivery')
+        await expect(deliveryAddress).toContainText(`${testUser.firstname} ${testUser.lastname}`)
     });
 });

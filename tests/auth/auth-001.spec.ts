@@ -14,7 +14,7 @@ test.describe("User registration", () => {
     await register.clickSignUpLink();
 
     // Start registration
-    await register.fillSignUpName('Sergio');
+    await register.fillSignUpName(testUser.name);
     await register.fillSignUpEmail(testUser.email);
     await register.clickSignUpButton();
 
@@ -26,24 +26,29 @@ test.describe("User registration", () => {
     await register.fillPassword(testUser.password);
 
     await register.selectBirthDate(
-      '1',
-      '1',
-      '1994'
+      testUser.birth_date,
+      testUser.birth_month,
+      testUser.birth_year
     );
 
     // Address information
+    await register.fillFullName(testUser.firstname, testUser.lastname);
     await register.fillAddressInformation(
-      "Company",
-      "New York",
-      "New York",
-      "New York",
-      "10019",
-      "777-7777-7777"
+      testUser.company,
+      testUser.address1,
+      testUser.state,
+      testUser.city,
+      testUser.zipcode,
+      testUser.mobile_number
     );
 
-    await register.selectCountry("United States");
+    await register.selectCountry(testUser.country);
 
     // Submit registration
     await register.clickCreateAccount();
+
+    // Verify account created
+    const accountCreatedHeader = page.locator('[data-qa="account-created"]')
+    await expect(accountCreatedHeader).toHaveText('Account Created!')
   });
 });

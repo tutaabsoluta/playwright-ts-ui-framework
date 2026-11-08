@@ -17,6 +17,8 @@ export class RegisterPage {
     public readonly birthMonthSelect: Locator;
     public readonly birthYearSelect: Locator;
 
+    public readonly firstNameInput: Locator;
+    public readonly lastNameInput: Locator;
     public readonly companyInput: Locator;
     public readonly addressInput: Locator;
     public readonly countrySelect: Locator;
@@ -45,6 +47,8 @@ export class RegisterPage {
         this.birthMonthSelect = page.locator("#months");
         this.birthYearSelect = page.locator("#years");
 
+        this.firstNameInput = page.locator('[data-qa="first_name"]');
+        this.lastNameInput = page.locator('[data-qa="last_name"]');
         this.companyInput = page.locator("#company");
         this.addressInput = page.locator('[data-qa="address"]');
         this.countrySelect = page.locator("#country");
@@ -92,6 +96,11 @@ export class RegisterPage {
         await this.birthDaySelect.selectOption({ value: birthDate });
         await this.birthMonthSelect.selectOption({ value: birthMonth });
         await this.birthYearSelect.selectOption({ value: birthYear });
+    }
+
+    async fillFullName(firstName: string, lastName: string) {
+        await this.firstNameInput.fill(firstName);
+        await this.lastNameInput.fill(lastName);
     }
 
     async fillAddressInformation(
