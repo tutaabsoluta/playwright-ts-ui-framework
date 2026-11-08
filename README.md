@@ -115,14 +115,13 @@ npx tsc --noEmit                           # type-check
 
 ## CI/CD
 
-The workflow in [.github/workflows/playwright.yml](.github/workflows/playwright.yml) runs on push and pull request to `main`/`master`:
+The workflow in [.github/workflows/playwright.yml](.github/workflows/playwright.yml) runs on push and pull request to `main`/`master`, and can be started manually from the **Actions** tab (**Run workflow**), optionally choosing a single suite.
 
-1. Checkout and set up Node.js (LTS)
-2. `npm ci` and `npx playwright install --with-deps`
-3. `npx playwright test` on all three browsers
-4. Upload `playwright-report/` as an artifact (kept for 30 days)
+- **Matrix**: one parallel job per suite (`auth`, `cart`, `checkout`, `products`), each running all three browsers with 2 workers. `fail-fast` is off, so one failing suite doesn't cancel the others.
+- **Caching**: npm packages are cached by `actions/setup-node`, and Playwright browsers (`~/.cache/ms-playwright`) are cached per Playwright version. On a cache hit only the system dependencies are installed.
+- **Reports**: each job uploads its HTML report as `playwright-report-<suite>` (kept for 30 days).
 
-On CI the config enables `forbidOnly`, 2 retries, 2 workers, and traces on the first retry.
+On CI the config enables `forbidOnly`, 2 retries, and traces on the first retry.
 
 ## Roadmap
 

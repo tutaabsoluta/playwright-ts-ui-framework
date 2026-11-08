@@ -4,24 +4,52 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: Test suite to run
+        type: choice
+        options: [ all, auth, cart, checkout, products ]
+        default: all
 jobs:
   test:
+    name: test (${{ matrix.suite }})
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Push/PR and manual "all" run every suite; a manual run can pick a single one
+        suite: ${{ fromJSON((github.event_name != 'workflow_dispatch' || inputs.suite == 'all') && '["auth","cart","checkout","products"]' || format('["{0}"]', inputs.suite)) }}
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
+        cache: npm
     - name: Install dependencies
       run: npm ci
-    - name: Install Playwright Browsers
+    - name: Get Playwright version
+      id: playwright-version
+      run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+    - name: Cache Playwright browsers
+      id: playwright-cache
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/ms-playwright
+        key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
+    - name: Install Playwright browsers
+      if: steps.playwright-cache.outputs.cache-hit != 'true'
       run: npx playwright install --with-deps
+    # Browsers come from the cache, but system dependencies still have to be installed
+    - name: Install Playwright system dependencies
+      if: steps.playwright-cache.outputs.cache-hit == 'true'
+      run: npx playwright install-deps
     - name: Run Playwright tests
-      run: npx playwright test
+      run: npx playwright test tests/${{ matrix.suite }} --workers=2
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
-        name: playwright-report
+        name: playwright-report-${{ matrix.suite }}
         path: playwright-report/
         retention-days: 30
