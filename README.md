@@ -8,7 +8,7 @@ End-to-end UI automation framework for [automationexercise.com](https://automati
 - **Page Object Model**: page classes expose `Locator`s and small action methods; assertions stay in the specs.
 - **API-backed test data**: every test gets its own throwaway user, created through the public API before the test and deleted after it. Tests are therefore independent and run fully in parallel.
 - **Cross-browser**: Chromium, Firefox and WebKit projects are configured in `playwright.config.ts`.
-- **CI/CD**: GitHub Actions runs the whole suite on every push and pull request to `main`/`master` and publishes the HTML report as an artifact.
+- **CI/CD**: GitHub Actions runs each suite as a parallel job on every push and pull request to `main`/`master` (or manually), and publishes the HTML reports as artifacts.
 
 ## Tech stack
 
@@ -110,8 +110,9 @@ npx playwright test                        # all tests on Chromium, Firefox and 
 npx playwright test tests/cart             # a single suite
 npx playwright test tests/auth/auth-002.spec.ts --headed --project=chromium
 npx playwright show-report                 # open the last HTML report
-npx tsc --noEmit                           # type-check
 ```
+
+> automationexercise.com is a shared public site and can answer with "queue full" or 520 errors under load. If many tests fail at once when running everything locally, limit parallelism with `--workers=2` (the value CI uses).
 
 ## CI/CD
 
@@ -128,6 +129,7 @@ On CI the config enables `forbidOnly`, 2 retries, and traces on the first retry.
 
 - Add page objects for Home/Header, Products, Product Details, Cart, Checkout and Payment.
 - Replace repeated UI login steps with a logged-in fixture or `storageState`.
+- Add `typescript` as a dev dependency so `npx tsc --noEmit` can type-check the project.
 - Add ESLint, Prettier and npm scripts; run lint and type-check in CI.
-- Docker support based on the official Playwright image.
+- A `Dockerfile` to run the suite locally in the same Playwright image CI uses.
 - Tags (`@smoke`, `@regression`) and a smoke job for pull requests.
