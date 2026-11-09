@@ -12,10 +12,34 @@ on:
         options: [ all, auth, cart, checkout, products ]
         default: all
 jobs:
+  install:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    # Browsers and system dependencies are preinstalled in the official image.
+    # Keep the tag in sync with the @playwright/test version in package-lock.json.
+    container:
+      image: mcr.microsoft.com/playwright:v1.59.1-noble
+      options: --user 1001
+    steps:
+    - uses: actions/checkout@v4
+    - name: Cache node_modules
+      id: node-modules-cache
+      uses: actions/cache@v4
+      with:
+        path: node_modules
+        key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+    - name: Install dependencies
+      if: steps.node-modules-cache.outputs.cache-hit != 'true'
+      run: npm ci
+
   test:
     name: test (${{ matrix.suite }})
+    needs: install
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.59.1-noble
+      options: --user 1001
     strategy:
       fail-fast: false
       matrix:
@@ -23,28 +47,12 @@ jobs:
         suite: ${{ fromJSON((github.event_name != 'workflow_dispatch' || inputs.suite == 'all') && '["auth","cart","checkout","products"]' || format('["{0}"]', inputs.suite)) }}
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
+    - name: Restore node_modules
+      uses: actions/cache/restore@v4
       with:
-        node-version: lts/*
-        cache: npm
-    - name: Install dependencies
-      run: npm ci
-    - name: Get Playwright version
-      id: playwright-version
-      run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
-    - name: Cache Playwright browsers
-      id: playwright-cache
-      uses: actions/cache@v4
-      with:
-        path: ~/.cache/ms-playwright
-        key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
-    - name: Install Playwright browsers
-      if: steps.playwright-cache.outputs.cache-hit != 'true'
-      run: npx playwright install --with-deps
-    # Browsers come from the cache, but system dependencies still have to be installed
-    - name: Install Playwright system dependencies
-      if: steps.playwright-cache.outputs.cache-hit == 'true'
-      run: npx playwright install-deps
+        path: node_modules
+        key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+        fail-on-cache-miss: true
     - name: Run Playwright tests
       run: npx playwright test tests/${{ matrix.suite }} --workers=2
     - uses: actions/upload-artifact@v4

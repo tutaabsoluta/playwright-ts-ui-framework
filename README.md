@@ -117,8 +117,9 @@ npx tsc --noEmit                           # type-check
 
 The workflow in [.github/workflows/playwright.yml](.github/workflows/playwright.yml) runs on push and pull request to `main`/`master`, and can be started manually from the **Actions** tab (**Run workflow**), optionally choosing a single suite.
 
+- **Container**: jobs run in the official `mcr.microsoft.com/playwright` image, which already contains the browsers and their system dependencies. Its tag must match the `@playwright/test` version in `package-lock.json`.
+- **Install job**: runs `npm ci` once and caches `node_modules` (keyed on `package-lock.json`). The test jobs only restore that cache.
 - **Matrix**: one parallel job per suite (`auth`, `cart`, `checkout`, `products`), each running all three browsers with 2 workers. `fail-fast` is off, so one failing suite doesn't cancel the others.
-- **Caching**: npm packages are cached by `actions/setup-node`, and Playwright browsers (`~/.cache/ms-playwright`) are cached per Playwright version. On a cache hit only the system dependencies are installed.
 - **Reports**: each job uploads its HTML report as `playwright-report-<suite>` (kept for 30 days).
 
 On CI the config enables `forbidOnly`, 2 retries, and traces on the first retry.
