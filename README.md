@@ -14,7 +14,7 @@ End-to-end UI automation framework for [automationexercise.com](https://automati
 - **API-backed test data**: every test gets its own throwaway user, created through the public API before the test and deleted after it. Tests are therefore independent and run fully in parallel.
 - **Cross-browser**: Chromium, Firefox and WebKit projects are configured in `playwright.config.ts`.
 - **UI + API**: besides the UI flows, the site's public REST API is tested in a browserless `api` project.
-- **Tagged test sets**: `@smoke` (critical flows, run on every pull request) and `@regression` (everything, run on push and nightly).
+- **Tagged test sets**: `@smoke` (critical flows, run on every push and pull request) and `@regression` (everything, run nightly).
 - **CI/CD**: GitHub Actions runs each suite as a parallel job and publishes an Allure dashboard with history to GitHub Pages.
 
 ## Tech stack
@@ -191,7 +191,7 @@ npm run format:check
 npm run typecheck     # tsc --noEmit
 ```
 
-> automationexercise.com is a shared public site and can answer with "queue full" or 520 errors under load. If many tests fail at once when running everything locally, limit parallelism with `--workers=2` (the value CI uses).
+> automationexercise.com is a shared public site and can answer with "queue full" or 520 errors under load, and its hosting shows a "One moment, please..." bot check to clients that send too many requests. That's why CI runs `@smoke` on push and the full `@regression` set only nightly. If many tests fail at once when running everything locally, limit parallelism with `--workers=2` (the value CI uses).
 
 ## CI/CD
 
@@ -200,7 +200,7 @@ The workflow in [.github/workflows/playwright.yml](.github/workflows/playwright.
 | Trigger                             | Test set                          |
 | ----------------------------------- | --------------------------------- |
 | Pull request to `main`/`master`     | `@smoke`                          |
-| Push to `main`/`master`             | `@regression`                     |
+| Push to `main`/`master`             | `@smoke`                          |
 | Nightly schedule (03:00 UTC)        | `@regression`                     |
 | Manual (**Actions → Run workflow**) | choose suite and smoke/regression |
 
@@ -209,7 +209,7 @@ The workflow in [.github/workflows/playwright.yml](.github/workflows/playwright.
 - **Quality job**: Prettier check, ESLint and `tsc --noEmit`. The test jobs only start if it passes.
 - **Matrix**: one job per suite (`api`, `auth`, `cart`, `checkout`, `products`), filtered by the tag above, with 2 workers. At most 2 suites run at the same time (`max-parallel: 2`), because the site answers "queue full" (503) when too many sessions hit it at once. UI suites run on all three browsers. `fail-fast` is off, so one failing suite doesn't cancel the others.
 - **Reports**: each job uploads its Playwright HTML report as `playwright-report-<suite>` (kept for 30 days) and its raw Allure results as `allure-results-<suite>`.
-- **Allure on GitHub Pages**: on pushes, nightly runs and manual runs on `main`/`master`, the `allure-report` job merges the results of all suites into one Allure report, and `deploy-report` publishes it to [GitHub Pages](https://tutaabsoluta.github.io/playwright-ts-ui-framework/). It runs even when tests fail. The Allure history is kept in the Actions cache, so the report shows trends, retries and flaky tests across runs. Failed tests include a screenshot, a video and, on retries, the Playwright trace.
+- **Allure on GitHub Pages**: on full regression runs on `main`/`master` (nightly, or manual with suite `all` and `regression`), the `allure-report` job merges the results of all suites into one Allure report, and `deploy-report` publishes it to [GitHub Pages](https://tutaabsoluta.github.io/playwright-ts-ui-framework/). It runs even when tests fail. The Allure history is kept in the Actions cache, so the report shows trends, retries and flaky tests across runs. Failed tests include a screenshot, a video and, on retries, the Playwright trace.
 
 > One-time setup: in the repository go to **Settings → Pages** and set **Source** to **GitHub Actions**.
 

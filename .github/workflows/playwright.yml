@@ -20,9 +20,10 @@ on:
         type: choice
         options: [regression, smoke]
         default: regression
-# Pull requests run the @smoke set; pushes, the nightly schedule and manual runs (by default) run @regression
+# Pushes and pull requests run the @smoke set; the nightly schedule runs @regression; manual runs choose.
+# Running the full set on every push overloads the site ("queue full" 503s and its "One moment, please..." bot check).
 env:
-  TEST_TAG: ${{ github.event_name == 'pull_request' && '@smoke' || github.event_name == 'workflow_dispatch' && format('@{0}', inputs.tag) || '@regression' }}
+  TEST_TAG: ${{ github.event_name == 'schedule' && '@regression' || github.event_name == 'workflow_dispatch' && format('@{0}', inputs.tag) || '@smoke' }}
 jobs:
   install:
     timeout-minutes: 15
@@ -67,7 +68,7 @@ jobs:
         run: npm run typecheck
 
   test:
-    name: test (${{ matrix.suite }}, ${{ github.event_name == 'pull_request' && 'smoke' || github.event_name == 'workflow_dispatch' && inputs.tag || 'regression' }})
+    name: test (${{ matrix.suite }}, ${{ github.event_name == 'schedule' && 'regression' || github.event_name == 'workflow_dispatch' && inputs.tag || 'smoke' }})
     # Don't spend browser minutes on code that doesn't lint or compile
     needs: quality
     timeout-minutes: 60
@@ -108,8 +109,9 @@ jobs:
 
   allure-report:
     needs: test
-    # Publish only from the default branch (not PRs), also when tests failed - that's when the report matters most
-    if: ${{ !cancelled() && needs.test.result != 'skipped' && github.event_name != 'pull_request' && (github.ref_name == 'main' || github.ref_name == 'master') }}
+    # Publish only full regression runs on the default branch (nightly, or manual with suite "all"), so a smoke run
+    # never replaces the complete report. Also when tests failed - that's when the report matters most.
+    if: ${{ !cancelled() && needs.test.result != 'skipped' && (github.ref_name == 'main' || github.ref_name == 'master') && (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.tag == 'regression' && inputs.suite == 'all')) }}
     timeout-minutes: 15
     runs-on: ubuntu-latest
     container:
