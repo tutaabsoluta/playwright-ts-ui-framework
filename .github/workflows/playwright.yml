@@ -77,6 +77,8 @@ jobs:
       options: --user 1001
     strategy:
       fail-fast: false
+      # automationexercise.com answers "queue full" (503) under load: at most 2 suites x 2 workers hit it at once
+      max-parallel: 2
       matrix:
         # Push/PR/nightly and manual "all" run every suite; a manual run can pick a single one
         suite: ${{ fromJSON((github.event_name != 'workflow_dispatch' || inputs.suite == 'all') && '["api","auth","cart","checkout","products"]' || format('["{0}"]', inputs.suite)) }}
