@@ -1,5 +1,7 @@
 # playwright-ts-ui-framework
 
+[![Playwright Tests](https://github.com/tutaabsoluta/playwright-ts-ui-framework/actions/workflows/playwright.yml/badge.svg)](https://github.com/tutaabsoluta/playwright-ts-ui-framework/actions/workflows/playwright.yml)
+
 End-to-end UI automation framework for [automationexercise.com](https://automationexercise.com), built with **Playwright** and **TypeScript**. It uses the Page Object Model, custom Playwright fixtures that manage test data through the site's API, and runs on GitHub Actions across Chromium, Firefox and WebKit.
 
 ## Framework overview
@@ -12,13 +14,15 @@ End-to-end UI automation framework for [automationexercise.com](https://automati
 
 ## Tech stack
 
-| Tool | Purpose |
-|---|---|
-| [@playwright/test](https://playwright.dev) | Test runner, browser automation, API requests |
-| TypeScript | Typed tests, page objects and services |
-| [uuid](https://www.npmjs.com/package/uuid) | Unique emails for generated users |
-| [dotenv](https://www.npmjs.com/package/dotenv) | Loads optional variables from `.env` |
-| GitHub Actions | Continuous integration |
+| Tool                                           | Purpose                                       |
+| ---------------------------------------------- | --------------------------------------------- |
+| [@playwright/test](https://playwright.dev)     | Test runner, browser automation, API requests |
+| TypeScript                                     | Typed tests, page objects and services        |
+| [uuid](https://www.npmjs.com/package/uuid)     | Unique emails for generated users             |
+| [dotenv](https://www.npmjs.com/package/dotenv) | Loads optional variables from `.env`          |
+| ESLint + `eslint-plugin-playwright`            | Linting, including Playwright best practices  |
+| Prettier                                       | Code formatting                               |
+| GitHub Actions                                 | Continuous integration                        |
 
 ## Architecture
 
@@ -79,15 +83,15 @@ UUIDAdapter ──► UserFactory ──► User ──► UserService (API) ─
 5. **Specs** import `test` and `expect` from `fixtures` and request only the fixtures they need:
 
 ```ts
-import { test, expect } from "../../fixtures";
+import { test, expect } from '../../fixtures';
 
-test("Should view cart", async ({ productsPage, cartPage, loggedInUser }) => {
-    await productsPage.header.goToProducts();
-    const productId = await productsPage.addProductToCart(0);
-    await productsPage.cartModal.continueShopping();
-    await productsPage.header.goToCart();
+test('Should view cart', async ({ productsPage, cartPage, loggedInUser }) => {
+  await productsPage.header.goToProducts();
+  const productId = await productsPage.addProductToCart(0);
+  await productsPage.cartModal.continueShopping();
+  await productsPage.header.goToCart();
 
-    await expect(cartPage.productRow(productId)).toBeVisible();
+  await expect(cartPage.productRow(productId)).toBeVisible();
 });
 ```
 
@@ -99,20 +103,20 @@ test("Should view cart", async ({ productsPage, cartPage, loggedInUser }) => {
 
 ## Covered test suites
 
-| Suite | Spec | Scenario | Assertions |
-|---|---|---|---|
-| **Auth** | `auth-001` | Register a new user through the UI | "Enter Account Information" form visible; `Account Created!` shown |
-| | `auth-002` | Log in with valid credentials | Logged-in user indicator visible |
-| | `auth-003` | Log in with invalid credentials | Error `Your email or password is incorrect!` shown |
-| **Products** | `products-001` | View all products | Product grid not empty; first card shows image, name, price and Add to cart |
-| | `products-002` | View product details | `Blue Top`, `Category: Women > Tops`, `Rs. 500`, `Availability: In Stock` |
-| | `products-003` | Search for a product | Searching `shirt` returns results containing "shirt" |
-| **Cart** | `cart-001` | Add a product to the cart | "Added!" modal visible |
-| | `cart-002` | View the cart | Empty-cart message hidden; row of the added product visible |
-| | `cart-003` | Set quantity on the product page and add to cart | Cart row shows the selected quantity |
-| **Checkout** | `checkout-001` | Proceed to checkout | URL `/checkout`; Address Details, Review Your Order and delivery address visible |
-| | `checkout-002` | Place an order and pay | URL `/payment_done/...`; `Order Placed!` shown |
-| | `checkout-003` | Order confirmation page | `Order Placed!`, confirmation message, Download Invoice and Continue visible |
+| Suite        | Spec           | Scenario                                         | Assertions                                                                       |
+| ------------ | -------------- | ------------------------------------------------ | -------------------------------------------------------------------------------- |
+| **Auth**     | `auth-001`     | Register a new user through the UI               | "Enter Account Information" form visible; `Account Created!` shown               |
+|              | `auth-002`     | Log in with valid credentials                    | Logged-in user indicator visible                                                 |
+|              | `auth-003`     | Log in with invalid credentials                  | Error `Your email or password is incorrect!` shown                               |
+| **Products** | `products-001` | View all products                                | Product grid not empty; first card shows image, name, price and Add to cart      |
+|              | `products-002` | View product details                             | `Blue Top`, `Category: Women > Tops`, `Rs. 500`, `Availability: In Stock`        |
+|              | `products-003` | Search for a product                             | Searching `shirt` returns results containing "shirt"                             |
+| **Cart**     | `cart-001`     | Add a product to the cart                        | "Added!" modal visible                                                           |
+|              | `cart-002`     | View the cart                                    | Empty-cart message hidden; row of the added product visible                      |
+|              | `cart-003`     | Set quantity on the product page and add to cart | Cart row shows the selected quantity                                             |
+| **Checkout** | `checkout-001` | Proceed to checkout                              | URL `/checkout`; Address Details, Review Your Order and delivery address visible |
+|              | `checkout-002` | Place an order and pay                           | URL `/payment_done/...`; `Order Placed!` shown                                   |
+|              | `checkout-003` | Order confirmation page                          | `Order Placed!`, confirmation message, Download Invoice and Continue visible     |
 
 ## Getting started
 
@@ -134,10 +138,21 @@ No environment variables are required: test users are created on the fly through
 
 ```bash
 npm test                                   # all tests, Chromium only
-npx playwright test                        # all tests on Chromium, Firefox and WebKit (as in CI)
+npm run test:all                           # all tests on Chromium, Firefox and WebKit (as in CI)
+npm run test:headed                        # Chromium, with the browser visible
+npm run test:ui                            # Playwright UI mode
 npx playwright test tests/cart             # a single suite
-npx playwright test tests/auth/auth-002.spec.ts --headed --project=chromium
-npx playwright show-report                 # open the last HTML report
+npm run report                             # open the last HTML report
+```
+
+### Code quality
+
+```bash
+npm run lint          # ESLint (TypeScript + Playwright rules, e.g. missing awaits)
+npm run lint:fix
+npm run format        # Prettier, writes changes
+npm run format:check
+npm run typecheck     # tsc --noEmit
 ```
 
 > automationexercise.com is a shared public site and can answer with "queue full" or 520 errors under load. If many tests fail at once when running everything locally, limit parallelism with `--workers=2` (the value CI uses).
@@ -147,7 +162,8 @@ npx playwright show-report                 # open the last HTML report
 The workflow in [.github/workflows/playwright.yml](.github/workflows/playwright.yml) runs on push and pull request to `main`/`master`, and can be started manually from the **Actions** tab (**Run workflow**), optionally choosing a single suite.
 
 - **Container**: jobs run in the official `mcr.microsoft.com/playwright` image, which already contains the browsers and their system dependencies. Its tag must match the `@playwright/test` version in `package-lock.json`.
-- **Install job**: runs `npm ci` once and caches `node_modules` (keyed on `package-lock.json`). The test jobs only restore that cache.
+- **Install job**: runs `npm ci` once and caches `node_modules` (keyed on `package-lock.json`). The other jobs only restore that cache.
+- **Quality job**: Prettier check, ESLint and `tsc --noEmit`. The test jobs only start if it passes.
 - **Matrix**: one parallel job per suite (`auth`, `cart`, `checkout`, `products`), each running all three browsers with 2 workers. `fail-fast` is off, so one failing suite doesn't cancel the others.
 - **Reports**: each job uploads its HTML report as `playwright-report-<suite>` (kept for 30 days).
 
@@ -155,7 +171,7 @@ On CI the config enables `forbidOnly`, 2 retries, and traces on the first retry.
 
 ## Roadmap
 
-- Add `typescript` as a dev dependency so `npx tsc --noEmit` can type-check the project.
-- Add ESLint, Prettier and npm scripts; run lint and type-check in CI.
+- Allure report published to GitHub Pages.
+- API tests for the site's public API.
 - A `Dockerfile` to run the suite locally in the same Playwright image CI uses.
 - Tags (`@smoke`, `@regression`) and a smoke job for pull requests.

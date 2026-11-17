@@ -1,5 +1,5 @@
-import { PaymentCard } from "../types/PaymentCard";
-import { User } from "../types/User";
+import { PaymentCard } from '../types/PaymentCard';
+import { User } from '../types/User';
 
 // The site accepts any card details; this is a standard test card number.
 export const testCard = (user: User): PaymentCard => ({

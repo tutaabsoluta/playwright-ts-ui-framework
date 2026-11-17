@@ -1,7 +1,7 @@
-import { test, expect } from "../../fixtures";
+import { test, expect } from '../../fixtures';
 
-test.describe("Cart", () => {
-    test("Should update product quantity", async ({ productsPage, productDetailsPage, cartPage, loggedInUser }) => {
+test.describe('Cart', () => {
+    test('Should update product quantity', async ({ productsPage, productDetailsPage, cartPage, loggedInUser }) => {
         const productId = '1';
         const quantity = 4;
 

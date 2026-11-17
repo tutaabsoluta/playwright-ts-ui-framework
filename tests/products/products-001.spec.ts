@@ -1,7 +1,7 @@
-import { test, expect } from "../../fixtures";
+import { test, expect } from '../../fixtures';
 
-test.describe("Products", () => {
-    test("Should view all products", async ({ productsPage, loggedInUser }) => {
+test.describe('Products', () => {
+    test('Should view all products', async ({ productsPage, loggedInUser }) => {
         await productsPage.header.goToProducts();
 
         await expect(productsPage.productCards).not.toHaveCount(0);

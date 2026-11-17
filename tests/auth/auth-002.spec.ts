@@ -1,7 +1,7 @@
-import { test, expect } from "../../fixtures";
+import { test, expect } from '../../fixtures';
 
-test.describe("Login flow", () => {
-    test("Should login successfully with valid credentials", async ({ loginPage, testUser }) => {
+test.describe('Login flow', () => {
+    test('Should login successfully with valid credentials', async ({ loginPage, testUser }) => {
         // Navigate to login page
         await loginPage.navigate('/');
         await loginPage.header.goToSignupLogin();

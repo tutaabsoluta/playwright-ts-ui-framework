@@ -4,14 +4,30 @@
   "description": "End-to-end UI automation framework built with Playwright and TypeScript using Page Object Model, fixtures, reusable utilities, Docker, and CI/CD integration through GitHub Actions.",
   "main": "index.js",
   "scripts": {
-    "test": "npx playwright test tests --project=chromium"
+    "test": "playwright test --project=chromium",
+    "test:all": "playwright test",
+    "test:headed": "playwright test --project=chromium --headed",
+    "test:ui": "playwright test --ui",
+    "report": "playwright show-report",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.59.1",
-    "@types/node": "^25.9.4"
+    "@types/node": "^25.9.4",
+    "eslint": "^10.15.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-playwright": "^2.12.2",
+    "prettier": "^3.10.1",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.73.0"
   },
   "dependencies": {
     "dotenv": "^17.4.2",

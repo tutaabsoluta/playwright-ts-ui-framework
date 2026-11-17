@@ -20,12 +20,28 @@ type Pages = {
 };
 
 export const test = base.extend<Pages>({
-    loginPage: async ({ page }, use) => { await use(new LoginPage(page)); },
-    registerPage: async ({ page }, use) => { await use(new RegisterPage(page)); },
-    productsPage: async ({ page }, use) => { await use(new ProductsPage(page)); },
-    productDetailsPage: async ({ page }, use) => { await use(new ProductDetailsPage(page)); },
-    cartPage: async ({ page }, use) => { await use(new CartPage(page)); },
-    checkoutPage: async ({ page }, use) => { await use(new CheckoutPage(page)); },
-    paymentPage: async ({ page }, use) => { await use(new PaymentPage(page)); },
-    orderPlacedPage: async ({ page }, use) => { await use(new OrderPlacedPage(page)); },
+    loginPage: async ({ page }, use) => {
+        await use(new LoginPage(page));
+    },
+    registerPage: async ({ page }, use) => {
+        await use(new RegisterPage(page));
+    },
+    productsPage: async ({ page }, use) => {
+        await use(new ProductsPage(page));
+    },
+    productDetailsPage: async ({ page }, use) => {
+        await use(new ProductDetailsPage(page));
+    },
+    cartPage: async ({ page }, use) => {
+        await use(new CartPage(page));
+    },
+    checkoutPage: async ({ page }, use) => {
+        await use(new CheckoutPage(page));
+    },
+    paymentPage: async ({ page }, use) => {
+        await use(new PaymentPage(page));
+    },
+    orderPlacedPage: async ({ page }, use) => {
+        await use(new OrderPlacedPage(page));
+    },
 });

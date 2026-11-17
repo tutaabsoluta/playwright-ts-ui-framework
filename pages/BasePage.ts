@@ -1,5 +1,5 @@
-import { Page } from "@playwright/test";
-import { HeaderComponent } from "./components/HeaderComponent";
+import { Page } from '@playwright/test';
+import { HeaderComponent } from './components/HeaderComponent';
 
 export abstract class BasePage {
     public readonly header: HeaderComponent;

@@ -6,7 +6,7 @@ const AD_HOSTS = /googlesyndication|doubleclick|googleadservices|adservice\.goog
 
 export const test = base.extend({
     page: async ({ page }, use) => {
-        await page.route(AD_HOSTS, route => route.abort());
+        await page.route(AD_HOSTS, (route) => route.abort());
         await use(page);
-    }
-})
+    },
+});

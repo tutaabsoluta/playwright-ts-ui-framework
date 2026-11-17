@@ -1,6 +1,6 @@
-import { Locator, Page } from "@playwright/test";
-import { BasePage } from "./BasePage";
-import { CartModalComponent } from "./components/CartModalComponent";
+import { Locator, Page } from '@playwright/test';
+import { BasePage } from './BasePage';
+import { CartModalComponent } from './components/CartModalComponent';
 
 export class ProductDetailsPage extends BasePage {
     public readonly name: Locator;

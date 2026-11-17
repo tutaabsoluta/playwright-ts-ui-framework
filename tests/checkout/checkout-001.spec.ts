@@ -1,7 +1,7 @@
-import { test, expect } from "../../fixtures";
+import { test, expect } from '../../fixtures';
 
-test.describe("Checkout", () => {
-    test("Should proceed to checkout", async ({ productsPage, cartPage, checkoutPage, loggedInUser }) => {
+test.describe('Checkout', () => {
+    test('Should proceed to checkout', async ({ productsPage, cartPage, checkoutPage, loggedInUser }) => {
         await productsPage.header.goToProducts();
         await productsPage.addProductToCart(0);
         await productsPage.cartModal.viewCart();

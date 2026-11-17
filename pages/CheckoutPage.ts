@@ -1,5 +1,5 @@
-import { Locator, Page } from "@playwright/test";
-import { BasePage } from "./BasePage";
+import { Locator, Page } from '@playwright/test';
+import { BasePage } from './BasePage';
 
 export class CheckoutPage extends BasePage {
     public readonly addressDetailsHeading: Locator;

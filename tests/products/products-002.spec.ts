@@ -1,7 +1,7 @@
-import { test, expect } from "../../fixtures";
+import { test, expect } from '../../fixtures';
 
-test.describe("Products", () => {
-    test("Should view product details", async ({ productsPage, productDetailsPage, loggedInUser }) => {
+test.describe('Products', () => {
+    test('Should view product details', async ({ productsPage, productDetailsPage, loggedInUser }) => {
         await productsPage.header.goToProducts();
         await productsPage.viewProduct('1');
 

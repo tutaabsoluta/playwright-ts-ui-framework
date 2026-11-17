@@ -1,5 +1,5 @@
-import { Locator, Page } from "@playwright/test";
-import { BasePage } from "./BasePage";
+import { Locator, Page } from '@playwright/test';
+import { BasePage } from './BasePage';
 
 export class RegisterPage extends BasePage {
     public readonly signupNameTextbox: Locator;
@@ -34,23 +34,23 @@ export class RegisterPage extends BasePage {
         this.signupEmailTextbox = page.locator('[data-qa="signup-email"]');
         this.signupButton = page.locator('[data-qa="signup-button"]');
 
-        this.signUpPageHeader = page.getByText("Enter Account Information");
-        this.titleRadio = page.locator("#id_gender1");
+        this.signUpPageHeader = page.getByText('Enter Account Information');
+        this.titleRadio = page.locator('#id_gender1');
         this.passwordInput = page.locator('[data-qa="password"]');
 
-        this.birthDaySelect = page.locator("#days");
-        this.birthMonthSelect = page.locator("#months");
-        this.birthYearSelect = page.locator("#years");
+        this.birthDaySelect = page.locator('#days');
+        this.birthMonthSelect = page.locator('#months');
+        this.birthYearSelect = page.locator('#years');
 
         this.firstNameInput = page.locator('[data-qa="first_name"]');
         this.lastNameInput = page.locator('[data-qa="last_name"]');
-        this.companyInput = page.locator("#company");
+        this.companyInput = page.locator('#company');
         this.addressInput = page.locator('[data-qa="address"]');
-        this.countrySelect = page.locator("#country");
-        this.stateInput = page.locator("#state");
-        this.cityInput = page.locator("#city");
-        this.zipcodeInput = page.locator("#zipcode");
-        this.phoneInput = page.locator("#mobile_number");
+        this.countrySelect = page.locator('#country');
+        this.stateInput = page.locator('#state');
+        this.cityInput = page.locator('#city');
+        this.zipcodeInput = page.locator('#zipcode');
+        this.phoneInput = page.locator('#mobile_number');
 
         this.createAccountButton = page.locator('[data-qa="create-account"]');
         this.accountCreatedHeader = page.locator('[data-qa="account-created"]');
@@ -76,11 +76,7 @@ export class RegisterPage extends BasePage {
         await this.passwordInput.fill(password);
     }
 
-    async selectBirthDate(
-        birthDate: string,
-        birthMonth: string,
-        birthYear: string
-    ) {
+    async selectBirthDate(birthDate: string, birthMonth: string, birthYear: string) {
         await this.birthDaySelect.selectOption({ value: birthDate });
         await this.birthMonthSelect.selectOption({ value: birthMonth });
         await this.birthYearSelect.selectOption({ value: birthYear });
@@ -97,7 +93,7 @@ export class RegisterPage extends BasePage {
         state: string,
         city: string,
         zipcode: string,
-        phone: string
+        phone: string,
     ) {
         await this.companyInput.fill(company);
         await this.addressInput.fill(address);
