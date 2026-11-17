@@ -8,8 +8,10 @@ export async function parseApiResponse<T = object>(response: APIResponse): Promi
     try {
         return JSON.parse(body) as ApiResult<T>;
     } catch {
-        throw new Error(
-            `${response.url()} returned HTTP ${response.status()} and a non-JSON body: ${body.slice(0, 200)}`,
-        );
+        // Error pages from the site ("queue full", the hosting's "One moment, please..." bot check)
+        // are HTML: show their title or heading, which says what happened.
+        const title = /<(?:title|h1|h2)[^>]*>([^<]+)</i.exec(body)?.[1].trim();
+        const summary = title ? `an HTML page "${title}"` : `a non-JSON body: ${body.slice(0, 200)}`;
+        throw new Error(`${response.url()} returned HTTP ${response.status()} and ${summary}`);
     }
 }
