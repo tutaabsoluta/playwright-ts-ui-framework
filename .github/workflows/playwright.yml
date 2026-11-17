@@ -142,6 +142,8 @@ jobs:
 
   deploy-report:
     needs: allure-report
+    # Without this, a failed test job (upstream of allure-report) skips the deploy
+    if: ${{ !cancelled() && needs.allure-report.result == 'success' }}
     runs-on: ubuntu-latest
     permissions:
       pages: write

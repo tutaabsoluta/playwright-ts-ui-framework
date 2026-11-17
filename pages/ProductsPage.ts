@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 import { BasePage } from './BasePage';
 import { CartModalComponent } from './components/CartModalComponent';
 
@@ -45,7 +45,14 @@ export class ProductsPage extends BasePage {
     }
 
     async viewProduct(productId: string) {
-        await this.page.locator(`.features_items [href="/product_details/${productId}"]`).click();
-        await this.waitForPage(new RegExp(`/product_details/${productId}$`));
+        const link = this.page.locator(`.features_items [href="/product_details/${productId}"]`);
+        const url = new RegExp(`/product_details/${productId}$`);
+
+        // On WebKit the click sometimes lands while the card's hover overlay is animating and
+        // no navigation starts. Retry the click until the details page loads.
+        await expect(async () => {
+            if (!url.test(this.page.url())) await link.click({ timeout: 5_000 });
+            await this.page.waitForURL(url, { waitUntil: 'domcontentloaded', timeout: 5_000 });
+        }).toPass({ timeout: 20_000 });
     }
 }
