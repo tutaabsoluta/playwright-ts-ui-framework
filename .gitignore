@@ -12,3 +12,8 @@ node_modules/
 
 # Claude Code MDs
 CLAUDE.md
+
+# Allure
+/allure-results/
+/allure-report/
+/allure-history/

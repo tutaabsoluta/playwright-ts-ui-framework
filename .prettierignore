@@ -4,3 +4,6 @@ test-results/
 blob-report/
 package-lock.json
 CLAUDE.md
+allure-results/
+allure-report/
+allure-history/

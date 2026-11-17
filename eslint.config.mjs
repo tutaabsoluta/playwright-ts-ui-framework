@@ -6,7 +6,15 @@ import prettier from 'eslint-config-prettier';
 
 export default tseslint.config(
     {
-        ignores: ['node_modules/', 'playwright-report/', 'test-results/', 'blob-report/'],
+        ignores: [
+            'node_modules/',
+            'playwright-report/',
+            'test-results/',
+            'blob-report/',
+            'allure-results/',
+            'allure-report/',
+            'allure-history/',
+        ],
     },
     eslint.configs.recommended,
     tseslint.configs.recommended,

@@ -1,6 +1,9 @@
 # playwright-ts-ui-framework
 
 [![Playwright Tests](https://github.com/tutaabsoluta/playwright-ts-ui-framework/actions/workflows/playwright.yml/badge.svg)](https://github.com/tutaabsoluta/playwright-ts-ui-framework/actions/workflows/playwright.yml)
+[![Allure Report](https://img.shields.io/badge/Allure-report-orange?logo=qameta)](https://tutaabsoluta.github.io/playwright-ts-ui-framework/)
+
+📊 **Latest test report:** https://tutaabsoluta.github.io/playwright-ts-ui-framework/
 
 End-to-end UI automation framework for [automationexercise.com](https://automationexercise.com), built with **Playwright** and **TypeScript**. It uses the Page Object Model, custom Playwright fixtures that manage test data through the site's API, and runs on GitHub Actions across Chromium, Firefox and WebKit.
 
@@ -22,7 +25,8 @@ End-to-end UI automation framework for [automationexercise.com](https://automati
 | [dotenv](https://www.npmjs.com/package/dotenv) | Loads optional variables from `.env`          |
 | ESLint + `eslint-plugin-playwright`            | Linting, including Playwright best practices  |
 | Prettier                                       | Code formatting                               |
-| GitHub Actions                                 | Continuous integration                        |
+| Allure Report 3 + `allure-playwright`          | Test report dashboard with history and trends |
+| GitHub Actions + GitHub Pages                  | Continuous integration, report hosting        |
 
 ## Architecture
 
@@ -142,7 +146,9 @@ npm run test:all                           # all tests on Chromium, Firefox and 
 npm run test:headed                        # Chromium, with the browser visible
 npm run test:ui                            # Playwright UI mode
 npx playwright test tests/cart             # a single suite
-npm run report                             # open the last HTML report
+npm run report                             # open the last Playwright HTML report
+npm run allure:generate                    # build the Allure report from allure-results/
+npm run allure:open                        # serve the generated Allure report
 ```
 
 ### Code quality
@@ -165,13 +171,15 @@ The workflow in [.github/workflows/playwright.yml](.github/workflows/playwright.
 - **Install job**: runs `npm ci` once and caches `node_modules` (keyed on `package-lock.json`). The other jobs only restore that cache.
 - **Quality job**: Prettier check, ESLint and `tsc --noEmit`. The test jobs only start if it passes.
 - **Matrix**: one parallel job per suite (`auth`, `cart`, `checkout`, `products`), each running all three browsers with 2 workers. `fail-fast` is off, so one failing suite doesn't cancel the others.
-- **Reports**: each job uploads its HTML report as `playwright-report-<suite>` (kept for 30 days).
+- **Reports**: each job uploads its Playwright HTML report as `playwright-report-<suite>` (kept for 30 days) and its raw Allure results as `allure-results-<suite>`.
+- **Allure on GitHub Pages**: on pushes and manual runs on the default branch, the `allure-report` job merges the results of all suites into one Allure report, and `deploy-report` publishes it to [GitHub Pages](https://tutaabsoluta.github.io/playwright-ts-ui-framework/). It runs even when tests fail. The Allure history is kept in the Actions cache, so the report shows trends, retries and flaky tests across runs. Failed tests include a screenshot, a video and, on retries, the Playwright trace.
+
+> One-time setup: in the repository go to **Settings → Pages** and set **Source** to **GitHub Actions**.
 
 On CI the config enables `forbidOnly`, 2 retries, and traces on the first retry.
 
 ## Roadmap
 
-- Allure report published to GitHub Pages.
 - API tests for the site's public API.
 - A `Dockerfile` to run the suite locally in the same Playwright image CI uses.
 - Tags (`@smoke`, `@regression`) and a smoke job for pull requests.

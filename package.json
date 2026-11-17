@@ -13,7 +13,9 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "allure:generate": "allure generate allure-results",
+    "allure:open": "allure open allure-report"
   },
   "keywords": [],
   "author": "",
@@ -22,6 +24,8 @@
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.59.1",
     "@types/node": "^25.9.4",
+    "allure": "^3.33.0",
+    "allure-playwright": "~3.11.1",
     "eslint": "^10.15.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-playwright": "^2.12.2",
