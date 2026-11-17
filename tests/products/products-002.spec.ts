@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures';
 
-test.describe('Products', () => {
+test.describe('Products', { tag: '@regression' }, () => {
     test('Should view product details', async ({ productsPage, productDetailsPage, loggedInUser }) => {
         await productsPage.header.goToProducts();
         await productsPage.viewProduct('1');

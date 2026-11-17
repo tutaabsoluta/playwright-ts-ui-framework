@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures';
 
-test.describe('User registration', () => {
+test.describe('User registration', { tag: '@regression' }, () => {
     test('Should register a new user successfully', async ({ registerPage, newUser }) => {
         // Navigate to homepage
         await registerPage.navigate('/');

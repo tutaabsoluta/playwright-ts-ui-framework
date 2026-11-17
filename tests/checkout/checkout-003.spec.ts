@@ -1,7 +1,7 @@
 import { test, expect } from '../../fixtures';
 import { testCard } from '../../data/paymentCards';
 
-test.describe('Checkout', () => {
+test.describe('Checkout', { tag: '@regression' }, () => {
     test('Should verify order confirmation', async ({
         productsPage,
         cartPage,

@@ -53,18 +53,27 @@ export default defineConfig({
 
     /* Configure projects for major browsers */
     projects: [
+        /* API tests don't need a browser, so they run once in their own project */
+        {
+            name: 'api',
+            testDir: './tests/api',
+        },
+
         {
             name: 'chromium',
+            testIgnore: '**/api/**',
             use: { ...devices['Desktop Chrome'] },
         },
 
         {
             name: 'firefox',
+            testIgnore: '**/api/**',
             use: { ...devices['Desktop Firefox'] },
         },
 
         {
             name: 'webkit',
+            testIgnore: '**/api/**',
             use: { ...devices['Desktop Safari'] },
         },
 

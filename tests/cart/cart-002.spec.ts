@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures';
 
-test.describe('Cart', () => {
+test.describe('Cart', { tag: '@regression' }, () => {
     test('Should view cart', async ({ productsPage, cartPage, loggedInUser }) => {
         await productsPage.header.goToProducts();
         const productId = await productsPage.addProductToCart(0);

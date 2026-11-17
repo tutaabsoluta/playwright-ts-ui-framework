@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures';
 
-test.describe('Cart', () => {
+test.describe('Cart', { tag: '@regression' }, () => {
     test('Should update product quantity', async ({ productsPage, productDetailsPage, cartPage, loggedInUser }) => {
         const productId = '1';
         const quantity = 4;

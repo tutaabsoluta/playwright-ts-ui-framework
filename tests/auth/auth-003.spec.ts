@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures';
 
-test.describe('Invalid login flow', () => {
+test.describe('Invalid login flow', { tag: '@regression' }, () => {
     test('Should fail the login with invalid credentials', async ({ loginPage }) => {
         await loginPage.navigate('/');
         await loginPage.header.goToSignupLogin();
