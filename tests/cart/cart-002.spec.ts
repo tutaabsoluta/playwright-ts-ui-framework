@@ -1,42 +1,14 @@
-import { expect } from "@playwright/test";
-import { test } from "../../fixtures/existingUser.fixture";
-import { LoginPage } from "../../pages/LoginPage";
+import { test, expect } from "../../fixtures";
 
 test.describe("Cart", () => {
-    test("Should view cart", async ({ page, testUser }) => {
-        const loginPage = new LoginPage(page)
+    test("Should view cart", async ({ productsPage, cartPage, loggedInUser }) => {
+        await productsPage.header.goToProducts();
+        const productId = await productsPage.addProductToCart(0);
+        await productsPage.cartModal.continueShopping();
 
-        await page.goto('/')
+        await productsPage.header.goToCart();
 
-        // Navigate to login page
-        await loginPage.clickSignUpLink();
-
-        // Login
-        await loginPage.fillLoginEmail(testUser.email);
-        await loginPage.fillLoginPassword(testUser.password);
-        await loginPage.clickLoginButton();
-
-        const productsNavLink = page.locator('[href="/products"]')
-        await productsNavLink.click()
-        await expect(page).toHaveURL(/\/products/)
-        // Cart handlers are bound by a script at the end of the page; wait for it before clicking
-        await page.waitForLoadState('domcontentloaded')
-
-
-        // Add the first product and keep its id to find it in the cart
-        const addToCartCta = page.locator('.btn.btn-default.add-to-cart').first()
-        const productId = await addToCartCta.getAttribute('data-product-id')
-        await addToCartCta.click()
-
-        const continueShoppingCta = page.locator('.btn.btn-success.close-modal.btn-block')
-        await continueShoppingCta.click()
-        const cartNavLink = page.locator('header').getByRole('link', { name: 'Cart' })
-        await cartNavLink.click()
-
-        const emptCartSpan = page.locator('[id="empty_cart"]')
-        await expect(emptCartSpan).not.toBeVisible()
-
-        const productTr = page.locator(`[id="product-${productId}"]`)
-        await expect(productTr).toBeVisible()
+        await expect(cartPage.emptyCartMessage).not.toBeVisible();
+        await expect(cartPage.productRow(productId)).toBeVisible();
     });
 });

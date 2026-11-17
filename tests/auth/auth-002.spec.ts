@@ -1,23 +1,16 @@
-import { expect } from "@playwright/test";
-import { LoginPage } from "../../pages/LoginPage";
-import { test } from "../../fixtures/existingUser.fixture";
+import { test, expect } from "../../fixtures";
 
 test.describe("Login flow", () => {
-    test("Should login successfully with valid credentials", async ({ page, testUser }) => {
-        const loginPage = new LoginPage(page);
-
-        // Navigate to homepage
-        await loginPage.navigate('/');
-
+    test("Should login successfully with valid credentials", async ({ loginPage, testUser }) => {
         // Navigate to login page
-        await loginPage.clickSignUpLink();
+        await loginPage.navigate('/');
+        await loginPage.header.goToSignupLogin();
 
         // Login
-        await loginPage.fillLoginEmail(testUser.email);
-        await loginPage.fillLoginPassword(testUser.password);
-        await loginPage.clickLoginButton();
+        await loginPage.login(testUser.email, testUser.password);
 
         // Verify user is logged in
-        await expect(loginPage.loggedInAs).toBeVisible();
+        await expect(loginPage.header.loggedInAs).toBeVisible();
+        await expect(loginPage.header.loggedInAs).toContainText(testUser.name);
     });
 });

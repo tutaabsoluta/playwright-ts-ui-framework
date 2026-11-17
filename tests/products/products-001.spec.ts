@@ -1,33 +1,16 @@
-import { expect } from "@playwright/test";
-import { test } from "../../fixtures/existingUser.fixture";
-import { LoginPage } from "../../pages/LoginPage";
-
+import { test, expect } from "../../fixtures";
 
 test.describe("Products", () => {
-    test("Should view all products", async ({ page, testUser }) => {
+    test("Should view all products", async ({ productsPage, loggedInUser }) => {
+        await productsPage.header.goToProducts();
 
-        const loginPage = new LoginPage(page)
-        await page.goto('/')
+        await expect(productsPage.productCards).not.toHaveCount(0);
 
-        // Navigate to login page
-        await loginPage.clickSignUpLink();
-
-        // Login
-        await loginPage.fillLoginEmail(testUser.email);
-        await loginPage.fillLoginPassword(testUser.password);
-        await loginPage.clickLoginButton();
-        
-        const productsNavLink = page.locator('[href="/products"]')
-        await productsNavLink.click()
-
-        const productCards = page.locator('.single-products')
-        await expect(productCards).not.toHaveCount(0)
-
-        // Assertions
-        const firstProduct = productCards.first()
-        await expect(firstProduct.locator('img').first()).toBeVisible()
-        await expect(firstProduct.locator('h2').first()).toBeVisible()
-        await expect(firstProduct.locator('p').first()).toBeVisible()
-        await expect(firstProduct.locator('.add-to-cart').first()).toBeVisible()
+        // First product card shows its main information
+        const firstProduct = productsPage.productCard(0);
+        await expect(firstProduct.image).toBeVisible();
+        await expect(firstProduct.price).toBeVisible();
+        await expect(firstProduct.name).toBeVisible();
+        await expect(firstProduct.addToCartButton).toBeVisible();
     });
 });

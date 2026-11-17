@@ -1,54 +1,43 @@
-import { expect } from "@playwright/test";
-import { RegisterPage } from "../../pages/RegisterPage";
-import { test } from "../../fixtures/userFactory.fixture";
+import { test, expect } from "../../fixtures";
 
 test.describe("User registration", () => {
-  test("Should register a new user successfully", async ({ page, testUser }) => {
-    const register = new RegisterPage(page);
-
+  test("Should register a new user successfully", async ({ registerPage, newUser }) => {
     // Navigate to homepage
-    await register.navigate('/');
-    await expect(register.titleLocator).toBeVisible();
+    await registerPage.navigate('/');
+    await expect(registerPage.header.logo).toBeVisible();
 
     // Navigate to signup/login
-    await register.clickSignUpLink();
+    await registerPage.header.goToSignupLogin();
 
     // Start registration
-    await register.fillSignUpName(testUser.name);
-    await register.fillSignUpEmail(testUser.email);
-    await register.clickSignUpButton();
+    await registerPage.fillSignUpName(newUser.name);
+    await registerPage.fillSignUpEmail(newUser.email);
+    await registerPage.clickSignUpButton();
 
     // Verify account information form
-    await expect(register.signUpPageHeader).toBeVisible();
+    await expect(registerPage.signUpPageHeader).toBeVisible();
 
     // Complete account information
-    await register.selectTitle();
-    await register.fillPassword(testUser.password);
-
-    await register.selectBirthDate(
-      testUser.birth_date,
-      testUser.birth_month,
-      testUser.birth_year
-    );
+    await registerPage.selectTitle();
+    await registerPage.fillPassword(newUser.password);
+    await registerPage.selectBirthDate(newUser.birth_date, newUser.birth_month, newUser.birth_year);
 
     // Address information
-    await register.fillFullName(testUser.firstname, testUser.lastname);
-    await register.fillAddressInformation(
-      testUser.company,
-      testUser.address1,
-      testUser.state,
-      testUser.city,
-      testUser.zipcode,
-      testUser.mobile_number
+    await registerPage.fillFullName(newUser.firstname, newUser.lastname);
+    await registerPage.fillAddressInformation(
+      newUser.company,
+      newUser.address1,
+      newUser.state,
+      newUser.city,
+      newUser.zipcode,
+      newUser.mobile_number
     );
-
-    await register.selectCountry(testUser.country);
+    await registerPage.selectCountry(newUser.country);
 
     // Submit registration
-    await register.clickCreateAccount();
+    await registerPage.clickCreateAccount();
 
     // Verify account created
-    const accountCreatedHeader = page.locator('[data-qa="account-created"]')
-    await expect(accountCreatedHeader).toHaveText('Account Created!')
+    await expect(registerPage.accountCreatedHeader).toHaveText('Account Created!');
   });
 });

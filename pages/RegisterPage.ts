@@ -1,10 +1,7 @@
 import { Locator, Page } from "@playwright/test";
+import { BasePage } from "./BasePage";
 
-export class RegisterPage {
-    private readonly page: Page;
-
-    public readonly titleLocator: Locator;
-    public readonly signUpLink: Locator;
+export class RegisterPage extends BasePage {
     public readonly signupNameTextbox: Locator;
     public readonly signupEmailTextbox: Locator;
     public readonly signupButton: Locator;
@@ -28,12 +25,10 @@ export class RegisterPage {
     public readonly phoneInput: Locator;
 
     public readonly createAccountButton: Locator;
+    public readonly accountCreatedHeader: Locator;
 
     constructor(page: Page) {
-        this.page = page;
-
-        this.titleLocator = page.locator(".logo.pull-left");
-        this.signUpLink = page.locator('[href="/login"]');
+        super(page);
 
         this.signupNameTextbox = page.locator('[data-qa="signup-name"]');
         this.signupEmailTextbox = page.locator('[data-qa="signup-email"]');
@@ -58,14 +53,7 @@ export class RegisterPage {
         this.phoneInput = page.locator("#mobile_number");
 
         this.createAccountButton = page.locator('[data-qa="create-account"]');
-    }
-
-    async navigate(url: string) {
-        await this.page.goto(url);
-    }
-
-    async clickSignUpLink() {
-        await this.signUpLink.click();
+        this.accountCreatedHeader = page.locator('[data-qa="account-created"]');
     }
 
     async fillSignUpName(name: string) {

@@ -29,17 +29,30 @@ End-to-end UI automation framework for [automationexercise.com](https://automati
 ├── utils/
 │   └── UserFactory.ts          # builds a User with a unique email (user<uuid>@mail.com)
 ├── types/
-│   └── User.ts                 # User interface, mirrors the createAccount API fields
+│   ├── User.ts                 # User interface, mirrors the createAccount API fields
+│   └── PaymentCard.ts          # card details for the payment form
+├── data/
+│   └── paymentCards.ts         # test card built from the user's name
 ├── services/
-│   └── UserService.service.ts  # POST /api/createAccount, DELETE /api/deleteAccount
+│   └── UserService.service.ts  # POST /api/createAccount, DELETE /api/deleteAccount (checks responseCode)
 ├── fixtures/
+│   ├── index.ts                # single entry point: mergeTests(pages, users) + expect
 │   ├── base.fixture.ts         # overrides page to block third-party ad requests
-│   ├── existingUser.fixture.ts # testUser registered via API before the test, deleted after
-│   ├── userFactory.fixture.ts  # unregistered testUser (registered in the UI), deleted after
-│   └── loginPage.fixture.ts    # LoginPage fixture
+│   ├── pages.fixture.ts        # one fixture per page object
+│   └── users.fixture.ts        # newUser, testUser, loggedInUser
 ├── pages/
-│   ├── LoginPage.ts            # header, login form, logged-in indicator, login error
-│   └── RegisterPage.ts         # signup form and "Enter Account Information" form
+│   ├── BasePage.ts             # header, navigate(), wait for page scripts after navigation
+│   ├── components/
+│   │   ├── HeaderComponent.ts  # nav links, "Logged in as", goToProducts/goToCart/goToSignupLogin
+│   │   └── CartModalComponent.ts # "Added!" modal: Continue Shopping / View Cart
+│   ├── LoginPage.ts            # login form and error
+│   ├── RegisterPage.ts         # signup form, account information form, "Account Created!"
+│   ├── ProductsPage.ts         # product grid, search, add to cart, view product
+│   ├── ProductDetailsPage.ts   # name, category, price, availability, quantity
+│   ├── CartPage.ts             # cart rows, quantities, Proceed To Checkout
+│   ├── CheckoutPage.ts         # address details, order review, comment, Place Order
+│   ├── PaymentPage.ts          # card form, Pay and Confirm Order
+│   └── OrderPlacedPage.ts      # order confirmation
 ├── tests/
 │   ├── auth/
 │   ├── products/
@@ -55,13 +68,28 @@ UUIDAdapter ──► UserFactory ──► User ──► UserService (API) ─
 ```
 
 1. **Adapter → Factory**: `UUIDAdapter` is injected into `UserFactory`, which returns a fully populated `User` with a unique email.
-2. **Service**: `UserService` uses Playwright's `APIRequestContext` to create and delete the account through the site's API.
-3. **Fixtures** own the data lifecycle:
-   - `existingUser.fixture` → register via API → run the test → delete the user. Used by every test that needs a logged-in user.
-   - `userFactory.fixture` → generate a user without registering it, so the test can register through the UI → delete the user afterwards.
-   - `base.fixture` → both fixtures extend it; it blocks ad requests that otherwise make clicks flaky.
-4. **Page objects** expose `public readonly` locators and actions such as `fill*`, `click*`, `select*` and `navigate`.
-5. **Specs** import `test` from the fixture they need and `expect` from `@playwright/test`.
+2. **Service**: `UserService` uses Playwright's `APIRequestContext` to create and delete the account through the site's API. The API always answers HTTP 200, so it checks the `responseCode` in the JSON body and throws a clear error when setup fails.
+3. **Fixtures** own the data lifecycle and are combined with `mergeTests` in `fixtures/index.ts`:
+   - `testUser` → register via API → run the test → delete the user.
+   - `loggedInUser` → `testUser` already logged in through the UI, so specs start on the home page as a signed-in user.
+   - `newUser` → user data that is not registered, so the test can register through the UI → deleted afterwards.
+   - `loginPage`, `productsPage`, `cartPage`, … → one fixture per page object.
+   - `base.fixture` → blocks ad requests that otherwise make clicks flaky.
+4. **Page objects** extend `BasePage`, expose `public readonly` locators and action methods, and share the `header` component. Navigation methods wait until the new page's scripts are loaded, because many buttons on the site only get their click handlers at the end of the page. Assertions stay in the specs.
+5. **Specs** import `test` and `expect` from `fixtures` and request only the fixtures they need:
+
+```ts
+import { test, expect } from "../../fixtures";
+
+test("Should view cart", async ({ productsPage, cartPage, loggedInUser }) => {
+    await productsPage.header.goToProducts();
+    const productId = await productsPage.addProductToCart(0);
+    await productsPage.cartModal.continueShopping();
+    await productsPage.header.goToCart();
+
+    await expect(cartPage.productRow(productId)).toBeVisible();
+});
+```
 
 ### Conventions
 
@@ -127,8 +155,6 @@ On CI the config enables `forbidOnly`, 2 retries, and traces on the first retry.
 
 ## Roadmap
 
-- Add page objects for Home/Header, Products, Product Details, Cart, Checkout and Payment.
-- Replace repeated UI login steps with a logged-in fixture or `storageState`.
 - Add `typescript` as a dev dependency so `npx tsc --noEmit` can type-check the project.
 - Add ESLint, Prettier and npm scripts; run lint and type-check in CI.
 - A `Dockerfile` to run the suite locally in the same Playwright image CI uses.

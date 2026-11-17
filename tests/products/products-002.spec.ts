@@ -1,31 +1,13 @@
-import { expect } from "@playwright/test";
-import { test } from "../../fixtures/existingUser.fixture";
-import { LoginPage } from "../../pages/LoginPage";
+import { test, expect } from "../../fixtures";
 
 test.describe("Products", () => {
-    test("Should view product details", async ({ page, testUser }) => {
-        await page.goto('/')
-        const loginPage = new LoginPage(page)
-        // Navigate to login page
-        await loginPage.clickSignUpLink();
+    test("Should view product details", async ({ productsPage, productDetailsPage, loggedInUser }) => {
+        await productsPage.header.goToProducts();
+        await productsPage.viewProduct('1');
 
-        // Login
-        await loginPage.fillLoginEmail(testUser.email);
-        await loginPage.fillLoginPassword(testUser.password);
-        await loginPage.clickLoginButton();
-
-        const productsNavLink = page.locator('[href="/products"]')
-        await productsNavLink.click()
-
-        const viewProductCta = page.locator('[href="/product_details/1"]')
-        await viewProductCta.click()
-
-        // product details
-        const productDetailsContainer = page.locator('.product-details')
-        await expect(productDetailsContainer.locator('h2')).toHaveText('Blue Top')
-        await expect(productDetailsContainer.locator('p').first()).toHaveText('Category: Women > Tops')
-        await expect(productDetailsContainer.getByText('Rs. 500')).toBeVisible()
-        await expect(productDetailsContainer.locator('p').nth(1)).toHaveText('Availability: In Stock')
-
+        await expect(productDetailsPage.name).toHaveText('Blue Top');
+        await expect(productDetailsPage.category).toHaveText('Category: Women > Tops');
+        await expect(productDetailsPage.price).toHaveText('Rs. 500');
+        await expect(productDetailsPage.availability).toHaveText('Availability: In Stock');
     });
 });
