@@ -109,9 +109,9 @@ jobs:
 
   allure-report:
     needs: test
-    # Publish only full regression runs on the default branch (nightly, or manual with suite "all"), so a smoke run
-    # never replaces the complete report. Also when tests failed - that's when the report matters most.
-    if: ${{ !cancelled() && needs.test.result != 'skipped' && (github.ref_name == 'main' || github.ref_name == 'master') && (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.tag == 'regression' && inputs.suite == 'all')) }}
+    # Publish every run on the default branch (not PRs), so the report always shows the latest run.
+    # Also when tests failed - that's when the report matters most.
+    if: ${{ !cancelled() && needs.test.result != 'skipped' && github.event_name != 'pull_request' && (github.ref_name == 'main' || github.ref_name == 'master') }}
     timeout-minutes: 15
     runs-on: ubuntu-latest
     container:
