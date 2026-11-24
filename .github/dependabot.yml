@@ -1,0 +1,24 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    # One PR per week for all dev tooling instead of one per package
+    groups:
+      dev-dependencies:
+        dependency-type: development
+    ignore:
+      # Must match the CI container image tag (mcr.microsoft.com/playwright:vX.Y.Z); upgrade both together by hand
+      - dependency-name: '@playwright/test'
+      # Pinned: newer versions require a newer Playwright
+      - dependency-name: allure-playwright
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ['*']
