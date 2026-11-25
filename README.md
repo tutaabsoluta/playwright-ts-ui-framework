@@ -75,7 +75,9 @@ End-to-end UI automation framework for [automationexercise.com](https://automati
 │   └── checkout/
 ├── allurerc.mjs                # Allure report name, grouping and history
 ├── eslint.config.mjs
-└── .github/workflows/playwright.yml
+└── .github/
+    ├── workflows/playwright.yml # CI pipeline
+    └── dependabot.yml          # weekly dependency update PRs
 ```
 
 ### How the layers fit together
@@ -214,6 +216,8 @@ The workflow in [.github/workflows/playwright.yml](.github/workflows/playwright.
 > One-time setup: in the repository go to **Settings → Pages** and set **Source** to **GitHub Actions**.
 
 On CI the config enables `forbidOnly`, 2 retries, and traces on the first retry.
+
+**Dependency updates**: Dependabot opens one grouped PR per week for npm dev dependencies and one for GitHub Actions; each PR runs the smoke set. `@playwright/test` is excluded because it must match the CI container image tag, so upgrade both together by hand.
 
 ## Roadmap
 
