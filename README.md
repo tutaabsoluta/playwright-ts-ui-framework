@@ -135,6 +135,7 @@ Specs marked 🔥 are part of the `@smoke` set; every spec is part of `@regressi
 | **Cart**     | `cart-001` 🔥     | Add a product to the cart                        | "Added!" modal visible                                                           |
 |              | `cart-002`        | View the cart                                    | Empty-cart message hidden; row of the added product visible                      |
 |              | `cart-003`        | Set quantity on the product page and add to cart | Cart row shows the selected quantity                                             |
+|              | `cart-004`        | Remove a product from the cart                   | Product row removed; empty-cart message shown                                    |
 | **Checkout** | `checkout-001`    | Proceed to checkout                              | URL `/checkout`; Address Details, Review Your Order and delivery address visible |
 |              | `checkout-002` 🔥 | Place an order and pay                           | URL `/payment_done/...`; `Order Placed!` shown                                   |
 |              | `checkout-003`    | Order confirmation page                          | `Order Placed!`, confirmation message, Download Invoice and Continue visible     |
@@ -223,4 +224,4 @@ On CI the config enables `forbidOnly`, 2 retries, and traces on the first retry.
 
 - A `Dockerfile` to run the suite locally in the same Playwright image CI uses.
 - Upgrade to Playwright ≥ 1.62 (CI image tag included) to use the latest `allure-playwright`.
-- More flows: logout, duplicate email signup, remove from cart, contact form, invoice download.
+- More flows: logout, duplicate email signup, contact form, invoice download.

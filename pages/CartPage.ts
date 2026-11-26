@@ -20,6 +20,10 @@ export class CartPage extends BasePage {
         return this.productRow(productId).locator('.cart_quantity button');
     }
 
+    async removeProduct(productId: string) {
+        await this.productRow(productId).locator('.cart_quantity_delete').click();
+    }
+
     async proceedToCheckout() {
         await this.proceedToCheckoutButton.click();
         await this.waitForPage(/\/checkout$/);
